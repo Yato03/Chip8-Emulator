@@ -1,6 +1,5 @@
 use std::fs;
 use std::io;
-use rand::Rng;
 
 pub struct Chip8 {
     // Aquí puedes definir los registros, memoria y otros componentes necesarios del emulador
@@ -22,7 +21,7 @@ pub struct Chip8 {
     sound_timer: u8,
 
     // Teclado
-    keypad: [bool; 16],
+    pub keypad: [bool; 16],
 
     // Pantalla
     screen: [bool; 64 * 32],
@@ -50,6 +49,10 @@ impl Chip8 {
 
     pub fn get_pc(&self) -> u16 {
         self.pc
+    }
+
+    pub fn get_screen(&self) -> &[bool; 64 * 32] {
+        &self.screen
     }
 
     pub fn load_rom(&mut self, rom_path: &str) -> Result<(), io::Error>  {
@@ -100,6 +103,8 @@ impl Chip8 {
                     },
                     0x00EE => {
                         // Instrucción RET: Retornar de una subrutina
+                        self.sp -= 1;
+                        self.pc = self.stack[self.sp as usize];
                     },
                     _ => {
                         // Instrucción SYS: Salto a una dirección de memoria
@@ -111,7 +116,10 @@ impl Chip8 {
                 self.pc = nnn;
             },
             0x2000 => {
-                // Instrucción CALL: Llamar a una subrutina
+                // Instrucción CALL: Llamar a una subrutinq
+                self.stack[self.sp as usize] = self.pc;
+                self.sp += 1;
+                self.pc = nnn;
             },
             0x3000 => {
                 // Instrucción SE: Saltar si igual
@@ -222,10 +230,26 @@ impl Chip8 {
                 // Instrucción RND: Generar número aleatorio
                 self.v[x as usize] = rand::random::<u8>() & nn as u8;
             },
-            /*0xD000 =>{
+            0xD000 =>{
                 // Instrucción DRW: Dibujar sprite
+                let x = self.v[x as usize] as usize;
+                let y = self.v[y as usize] as usize;
+                let height = n as usize;
+                self.v[0xF] = 0;
+                for yline in 0..height {
+                    let pixel = self.memory[self.i as usize + yline];
+                    for xline in 0..8 {
+                        if (pixel & (0x80 >> xline)) != 0 {
+                            let index = x + xline + ((y + yline) * 64);
+                            if self.screen[index] {
+                                self.v[0xF] = 1;
+                            }
+                            self.screen[index] ^= true;
+                        }
+                    }
+                }
                 
-            },*/
+            },
             0xE000 => {
                 match nn {
                     0x9E => {
