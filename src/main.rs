@@ -25,6 +25,7 @@ fn main() {
 
             let keys = display.get_window().get_keys().unwrap_or(Vec::new());
             input::update_keypad(&mut chip8.keypad, &keys);
+
         }
     }
     std::process::exit(0);

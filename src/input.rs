@@ -1,7 +1,6 @@
-
 use minifb::Key;
 
-pub fn update_keypad(keypad: &mut [bool; 16], keys: &[Key]) {
+pub fn update_keypad(keypad: &mut [bool; 16], keys: &[Key])  {
 
     // Inicializar todas las teclas en false
     for key in keypad.iter_mut() {
@@ -28,6 +27,5 @@ pub fn update_keypad(keypad: &mut [bool; 16], keys: &[Key]) {
             Key::V => keypad[0xF] = true,
             _ => (),
         }
-        println!("Key: {:?}", key);
     }
 }
