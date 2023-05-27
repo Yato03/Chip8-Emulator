@@ -1,4 +1,6 @@
 mod input;
+mod display;
+use display::Display;
 
 #[cfg(test)]
 mod tests {
@@ -32,4 +34,6 @@ mod tests {
         assert_eq!(keypad[0xE], false);
         // Resto de las teclas...
     }
+
+    
 }

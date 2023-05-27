@@ -9,10 +9,11 @@ mod input;
 use minifb::{Window, Key};
 
 fn main() {
+    let rom_name = "Chip8-emulator-Logo";
     let mut chip8 = Chip8::new();
-    let mut display = Display::new();
+    let mut display = Display::new(rom_name);
 
-    let rom_path = "C:\\Users\\migue\\Documents\\Programación\\rust\\chip8_emulator\\assets\\roms\\Pong.ch8";
+    let rom_path = format!("C:\\Users\\migue\\Documents\\Programación\\rust\\chip8_emulator\\assets\\roms\\{}.ch8", rom_name);
     /* Cargar el contenido de la ROM desde un archivo o cualquier otra fuente */
 
     let result = chip8.load_rom(&rom_path);

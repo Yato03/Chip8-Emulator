@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use minifb::{Window, WindowOptions};
 
 const SCREEN_WIDTH: usize = 720;
@@ -7,13 +9,14 @@ const BUFFER_HEIGHT: usize = 32;
 
 pub struct Display {
     // Agrega los campos necesarios para administrar el estado de la pantalla
-    window: Window,
+    window: Window
 }
 
 impl Display {
-    pub fn new() -> Display {
+    pub fn new(name: &str) -> Display {
+
         let window = Window::new(
-            "CHIP-8 Emulator",
+            format!("CHIP-8 Emulator: {}", name).as_str(),
             SCREEN_WIDTH,
             SCREEN_HEIGHT,
             WindowOptions::default(),
