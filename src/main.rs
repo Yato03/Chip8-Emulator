@@ -6,10 +6,13 @@ use display::Display;
 
 mod input;
 
+use std::time::Instant;
+use std::time::Duration;
+use std::thread;
 use minifb::{Window, Key};
 
 fn main() {
-    let rom_name = "Chip8-emulator-Logo";
+    let rom_name = "Pong";
     let mut chip8 = Chip8::new();
     let mut display = Display::new(rom_name);
 
@@ -21,7 +24,18 @@ fn main() {
     
     while should_continue(&display.get_window()) {
         if chip8.get_pc() < 0xfff {
-            chip8.emulate_cycle();
+            let start_frame = Instant::now();
+            for _ in 0..700/60 {
+                chip8.emulate_cycle();
+            }
+            let end_frame = Instant::now();
+
+            let elapsed = end_frame.duration_since(start_frame);
+
+            let elapsed_ms = elapsed.as_millis();
+            let time_to_sleep = if 17 > elapsed_ms {17 - elapsed_ms}  else {0};
+            thread::sleep(Duration::from_millis(time_to_sleep as u64));
+
             display.update(chip8.get_screen());
 
             let keys = display.get_window().get_keys().unwrap_or(Vec::new());
